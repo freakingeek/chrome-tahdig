@@ -1,0 +1,56 @@
+.ContentBox {
+  flex: 1;
+  display: flex;
+  margin-right: 1rem;
+  flex-direction: column;
+}
+
+.TodayLunch {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+
+  &__LunchHint {
+    line-height: 160%;
+    font-size: 0.875rem;
+    color: var(--gray-800);
+  }
+
+  &__Lunch {
+    display: block;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 160%;
+    margin-top: 0.25rem;
+    color: var(--black);
+  }
+
+  &__ResturantHint {
+    margin-top: 1rem;
+    line-height: 160%;
+    font-size: 0.875rem;
+    color: var(--gray-800);
+  }
+
+  &__Resturant {
+    display: block;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 160%;
+    margin-top: 0.25rem;
+    color: var(--black);
+  }
+}
+
+.ButtonBox__Button {
+  width: 100%;
+  display: flex;
+  height: 2.25rem;
+  font-weight: 700;
+  align-items: center;
+  color: var(--white);
+  font-size: 0.875rem;
+  border-radius: 0.25rem;
+  justify-content: center;
+  background-color: var(--primary);
+}

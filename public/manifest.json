@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "Tahdig",
+  "version": "1.0.0",
+  "description": "See your lunch in your browser!",
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": {
+    "128": "/assets/icons/128.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*/*"],
+      "js": ["/assets/index.js"]
+    }
+  ],
+  "icons": {
+    "128": "/assets/icons/128.png"
+  },
+  "permissions": [
+    "storage"
+  ]
+}
