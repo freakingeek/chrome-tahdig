@@ -1,0 +1,25 @@
+.Wrapper {
+  display: flex;
+  cursor: progress;
+  align-items: center;
+  justify-content: center;
+}
+
+.Svg {
+  width: 3.5rem;
+  fill: none;
+
+  &__Path {
+    fill: var(--primary);
+    animation: fade 1s linear alternate infinite;
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.2;
+  }
+}
