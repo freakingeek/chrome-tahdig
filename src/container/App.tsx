@@ -8,44 +8,52 @@ import HasFood from '../components/HasFood';
 
 // Others
 import axios from 'axios';
-import { useState } from 'react';
+import { useState, useContext, useEffect } from 'react';
+import { LunchContext, LunchProvider } from '../context/lunch';
+
+function checkUserCredentioal() {
+  const USER_API_TOKEN = '';
+
+  return !!USER_API_TOKEN;
+}
 
 function App() {
   const [status, setStatus] = useState(0);
+  const [lunch, reducer] = useContext(LunchContext);
 
-  async function requestUserLunch(key: string) {
-    try {
-      const res = await axios.get('https://basalamiha.ir/api/v1/lunch/today', {
-        headers: {
-          Authorization: `Bearer ${key}`,
-        },
-      });
+  // useEffect(() => {
+  //   async function requestUserLunch(key: string) {
+  //     try {
+  //       const res = await axios.get('https://basalamiha.ir/api/v1/lunch/today', {
+  //         headers: {
+  //           Authorization: `Bearer ${key}`,
+  //         },
+  //       });
+  
+  //       return res;
+  //     } catch (error) {
+  //       console.error('[ApiKey/sendApiToTheServer]', error);
+  //     }
+  //   }
+    
+  //   requestUserLunch('');
+  // }, []);
 
-      setStatus(200);
-      return res;
-    } catch (error) {
-      setStatus(401);
-      console.error('[ApiKey/sendApiToTheServer]', error);
+
+  function RealDC() {
+    if (!checkUserCredentioal()) {
+      return <ApiKey />;
     }
-  }
 
-  function DC() {
-    switch (status) {
-      case 0:
-        return <ApiKey requestUserLunch={requestUserLunch} />;
-      case 200:
-        return <HasFood />;
-      case 401:
-        return <Error />;
-      default:
-        return <ApiKey requestUserLunch={requestUserLunch} />;
-    }
+    return <ApiKey />;
   }
 
   return (
-    <main className={styles.Tahdig}>
-      <DC />
-    </main>
+    <LunchProvider>
+      <main className={styles.Tahdig}>
+        <RealDC />
+      </main>
+    </LunchProvider>
   );
 }
 
