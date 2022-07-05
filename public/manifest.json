@@ -9,12 +9,6 @@
     "128": "/assets/icons/128.png"
     }
   },
-  "content_scripts": [
-    {
-      "matches": ["https://*/*"],
-      "js": ["/assets/index.js"]
-    }
-  ],
   "icons": {
     "128": "/assets/icons/128.png"
   },
