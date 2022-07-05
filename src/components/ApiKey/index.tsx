@@ -3,11 +3,7 @@ import Pure from '../../layouts/Pure';
 import lockImage from '/src/assets/images/lock.svg';
 import { useState } from 'react';
 
-interface ApiKeyProps {
-  requestUserLunch: (key: string) => Promise<any>;
-}
-
-function ApiKey({ requestUserLunch }: ApiKeyProps) {
+function ApiKey() {
   const [apiKey, setApiKey] = useState('');
 
   function inputOnChange(e: React.FormEvent<HTMLInputElement>) {
@@ -26,7 +22,6 @@ function ApiKey({ requestUserLunch }: ApiKeyProps) {
 
   function handleApiKey() {
     saveApiKey();
-    requestUserLunch(apiKey);
 
     console.log('local', localStorage.getItem('tahdig-api-key'));
   }

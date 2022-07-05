@@ -1,7 +1,7 @@
 import styles from './Pure.module.scss';
 
 interface PurePropTypes {
-  className: string;
+  className?: string;
   children: React.ReactNode;
 }
 
