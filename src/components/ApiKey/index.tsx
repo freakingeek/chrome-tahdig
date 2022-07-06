@@ -1,29 +1,91 @@
+import { SET_LUNCH, SET_STATUS } from '../../context/global/global.actions';
+import { GlobalContext } from '../../context/global';
+import lockImage from '/src/assets/images/lock.svg';
+import { UserStatus } from '../../enums/UserStatus';
+import { useState, useContext, useEffect } from 'react';
 import styles from './ApiKey.module.scss';
 import Pure from '../../layouts/Pure';
-import lockImage from '/src/assets/images/lock.svg';
-import { useState } from 'react';
+import axios, { AxiosError } from 'axios';
 
 function ApiKey() {
-  const [apiKey, setApiKey] = useState('');
+  const [credentials, setCredentials] = useState('');
+  const [state, dispatch] = useContext(GlobalContext);
+
+  useEffect(() => {
+    if (state.status === UserStatus.Pending) {
+      const lunch = localStorage.getItem('lunch') || '{}'
+      const parsedLunch = JSON.parse(lunch);
+      
+      const currentDay = new Date().getDate()
+
+      if (parsedLunch?.date == currentDay || parsedLunch?.food) {
+        dispatch(SET_LUNCH(parsedLunch));
+        dispatch(SET_STATUS(UserStatus.HasFood));
+      } else {
+        localStorage.removeItem('lunch')
+        requestUserLunch(state.credentials);
+      }
+
+    }
+  }, []);
 
   function inputOnChange(e: React.FormEvent<HTMLInputElement>) {
-    setApiKey(e.currentTarget.value);
+    setCredentials(e.currentTarget.value);
   }
 
-  function saveApiKey() {
-    localStorage.setItem('tahdig-api-key', apiKey);
+  function setUserCredentials() {
+    localStorage.setItem('tahdig', credentials);
 
     if (typeof chrome !== undefined) {
-      chrome?.storage?.local?.set({ tahdig: apiKey });
+      chrome?.storage?.local?.set({ tahdig: credentials });
 
       // console.log('chrome', chrome.storage.local.get(['tahdig']));
     }
   }
 
-  function handleApiKey() {
-    saveApiKey();
+  function clearUserCredentials() {
+    localStorage.removeItem('tahdig');
 
-    console.log('local', localStorage.getItem('tahdig-api-key'));
+    if (typeof chrome !== undefined) {
+      chrome?.storage?.local?.set({ tahdig: credentials });
+
+      // console.log('chrome', chrome.storage.local.get(['tahdig']));
+    }
+  }
+
+  async function requestUserLunch(key: string) {
+    dispatch(SET_STATUS(UserStatus.Loading));
+
+    try {
+      const res = await axios.get('https://basalamiha.ir/api/v1/lunch/today', {
+        headers: { Authorization: `Bearer ${key}` },
+      });
+
+      if (!res.data) throw new Error('Lunch not found!');
+
+      console.log(res.data);
+
+      if (res.data.food) {
+        dispatch(SET_LUNCH(res.data));
+        dispatch(SET_STATUS(UserStatus.HasFood));
+
+        localStorage.setItem('lunch', JSON.stringify({ ...res.data, date: new Date().getDate() }));
+      } else {
+        dispatch(SET_STATUS(UserStatus.NoFood));
+      }
+      return res;
+    } catch (error) {
+      if ((error as AxiosError)?.response?.status === 401) {
+        clearUserCredentials();
+      }
+
+      dispatch(SET_STATUS(UserStatus.Error));
+    }
+  }
+
+  async function onUserLogin() {
+    setUserCredentials();
+    const result = await requestUserLunch(credentials);
   }
 
   return (
@@ -45,7 +107,7 @@ function ApiKey() {
         <footer className={`${styles.Footer} ${styles.ContentBox__Footer}`}>
           <input type="text" placeholder="کلید API شما" onChange={inputOnChange} className={styles.Footer__Input} />
 
-          <button onClick={handleApiKey} className={styles.Footer__Button}>
+          <button onClick={onUserLogin} className={styles.Footer__Button}>
             ورود
           </button>
         </footer>

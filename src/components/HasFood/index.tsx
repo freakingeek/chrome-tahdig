@@ -1,15 +1,20 @@
 import styles from './HasFood.module.scss';
 import Default from '../../layouts/Default';
+import { useContext } from 'react';
+import { GlobalContext } from '../../context/global';
+
 
 function HasFood() {
+  const [state] = useContext(GlobalContext)
+
   return (
     <Default>
       <div className={styles.ContentBox}>
         <div className={styles.TodayLunch}>
           <span className={styles.TodayLunch__LunchHint}>غذای امروز:</span>
-          <span className={styles.TodayLunch__Lunch}>قرمه‌سبزی دست‌پخت مادر!</span>
-          <span className={styles.TodayLunch__ResturantHint}>رستوران:</span>
-          <span className={styles.TodayLunch__Resturant}>کلافلی خیلی خیلی بی‌اعصاب!</span>
+          <span className={styles.TodayLunch__Lunch}>{state.lunch.food}</span>
+          <span className={styles.TodayLunch__RestaurantHint}>رستوران:</span>
+          <span className={styles.TodayLunch__Restaurant}>{state.lunch.restaurant}</span>
         </div>
 
         <div className={styles.ButtonBox}>

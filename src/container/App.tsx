@@ -1,59 +1,48 @@
 import styles from './App.module.scss';
 
 // Components
+import Splash from '../views/Splash';
 import Error from '../components/Error';
 import ApiKey from '../components/ApiKey';
 import NoFood from '../components/NoFood';
 import HasFood from '../components/HasFood';
 
 // Others
-import axios from 'axios';
-import { useState, useContext, useEffect } from 'react';
-import { LunchContext, LunchProvider } from '../context/lunch';
-
-function checkUserCredentioal() {
-  const USER_API_TOKEN = '';
-
-  return !!USER_API_TOKEN;
-}
+import { useContext, useEffect } from 'react';
+import { UserStatus } from '../enums/UserStatus';
+import { GlobalContext } from '../context/global';
 
 function App() {
-  const [status, setStatus] = useState(0);
-  const [lunch, reducer] = useContext(LunchContext);
+  const [state] = useContext(GlobalContext);
 
-  // useEffect(() => {
-  //   async function requestUserLunch(key: string) {
-  //     try {
-  //       const res = await axios.get('https://basalamiha.ir/api/v1/lunch/today', {
-  //         headers: {
-  //           Authorization: `Bearer ${key}`,
-  //         },
-  //       });
-  
-  //       return res;
-  //     } catch (error) {
-  //       console.error('[ApiKey/sendApiToTheServer]', error);
-  //     }
-  //   }
-    
-  //   requestUserLunch('');
-  // }, []);
+  useEffect(() => {
+    console.log('user-state', state);
+    DC();
+  }, [state]);
 
-
-  function RealDC() {
-    if (!checkUserCredentioal()) {
-      return <ApiKey />;
+  function DC() {
+    switch (state.status) {
+      case UserStatus.NotLogin:
+        return <ApiKey />;
+      case UserStatus.Pending:
+        return <ApiKey />
+      case UserStatus.Loading:
+        return <Splash />;
+      case UserStatus.HasFood:
+        return <HasFood />;
+      case UserStatus.NoFood:
+        return <NoFood />;
+      case UserStatus.Error:
+        return <Error />;
+      default:
+        return <></>;
     }
-
-    return <ApiKey />;
   }
 
   return (
-    <LunchProvider>
-      <main className={styles.Tahdig}>
-        <RealDC />
-      </main>
-    </LunchProvider>
+    <main className={styles.Tahdig}>
+      <DC />
+    </main>
   );
 }
 

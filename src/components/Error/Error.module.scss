@@ -45,7 +45,9 @@
 
   &__Button {
     width: 100%;
+    border: none;
     display: flex;
+    outline: none;
     height: 2.25rem;
     font-weight: 700;
     align-items: center;
