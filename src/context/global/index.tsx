@@ -3,6 +3,7 @@ import { SET_CREDENTIALS, SET_STATUS } from './global.actions';
 import { UserStatus } from '../../enums/UserStatus';
 import { GlobalState } from '../../types/state';
 import globalReducer from './global.reducer';
+import { getUserCredentials } from '../../helpers/credentials';
 
 interface LunchContextTypes {
   state: any;
@@ -27,14 +28,6 @@ function GlobalContextProvider({ children }: React.PropsWithChildren) {
   }, []);
 
   return <GlobalContext.Provider value={[state, dispatch]}>{children}</GlobalContext.Provider>;
-}
-
-// Utils
-
-function getUserCredentials() {
-  const USER_API_TOKEN = localStorage.getItem('tahdig');
-
-  return USER_API_TOKEN;
 }
 
 export { GlobalContext, GlobalContextProvider };

@@ -6,6 +6,7 @@ import { useState, useContext, useEffect } from 'react';
 import styles from './ApiKey.module.scss';
 import Pure from '../../layouts/Pure';
 import axios, { AxiosError } from 'axios';
+import { clearUserCredentials, setUserCredentials } from '../../helpers/credentials';
 
 function ApiKey() {
   const [credentials, setCredentials] = useState('');
@@ -18,7 +19,7 @@ function ApiKey() {
       
       const currentDay = new Date().getDate()
 
-      if (parsedLunch?.date == currentDay || parsedLunch?.food) {
+      if (parsedLunch?.date == currentDay && parsedLunch?.food) {
         dispatch(SET_LUNCH(parsedLunch));
         dispatch(SET_STATUS(UserStatus.HasFood));
       } else {
@@ -33,26 +34,6 @@ function ApiKey() {
     setCredentials(e.currentTarget.value);
   }
 
-  function setUserCredentials() {
-    localStorage.setItem('tahdig', credentials);
-
-    if (typeof chrome !== undefined) {
-      chrome?.storage?.local?.set({ tahdig: credentials });
-
-      // console.log('chrome', chrome.storage.local.get(['tahdig']));
-    }
-  }
-
-  function clearUserCredentials() {
-    localStorage.removeItem('tahdig');
-
-    if (typeof chrome !== undefined) {
-      chrome?.storage?.local?.set({ tahdig: credentials });
-
-      // console.log('chrome', chrome.storage.local.get(['tahdig']));
-    }
-  }
-
   async function requestUserLunch(key: string) {
     dispatch(SET_STATUS(UserStatus.Loading));
 
@@ -62,8 +43,6 @@ function ApiKey() {
       });
 
       if (!res.data) throw new Error('Lunch not found!');
-
-      console.log(res.data);
 
       if (res.data.food) {
         dispatch(SET_LUNCH(res.data));
@@ -76,7 +55,7 @@ function ApiKey() {
       return res;
     } catch (error) {
       if ((error as AxiosError)?.response?.status === 401) {
-        clearUserCredentials();
+        clearUserCredentials()
       }
 
       dispatch(SET_STATUS(UserStatus.Error));
@@ -84,8 +63,8 @@ function ApiKey() {
   }
 
   async function onUserLogin() {
-    setUserCredentials();
-    const result = await requestUserLunch(credentials);
+    requestUserLunch(credentials);
+    setUserCredentials(credentials);
   }
 
   return (

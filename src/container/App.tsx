@@ -16,7 +16,6 @@ function App() {
   const [state] = useContext(GlobalContext);
 
   useEffect(() => {
-    console.log('user-state', state);
     DC();
   }, [state]);
 

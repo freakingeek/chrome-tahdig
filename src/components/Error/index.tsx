@@ -5,13 +5,15 @@ import { SET_STATUS } from '../../context/global/global.actions';
 import errorCircleImage from '/src/assets/images/error-circle.svg';
 import { useContext } from 'react';
 import { UserStatus } from '../../enums/UserStatus';
+import { getUserCredentials } from '../../helpers/credentials';
 
 function Error() {
-  const [state, dispatch] = useContext(GlobalContext);
+  const [, dispatch] = useContext(GlobalContext);
 
   function retry() {
-    // TODO: Set status currectly
-    dispatch(SET_STATUS(UserStatus.NotLogin));
+    const status = getUserCredentials() ? UserStatus.Pending : UserStatus.NotLogin
+
+    dispatch(SET_STATUS(status));
   }
 
   return (
