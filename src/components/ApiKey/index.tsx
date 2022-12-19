@@ -38,7 +38,7 @@ function ApiKey() {
     dispatch(SET_STATUS(UserStatus.Loading));
 
     try {
-      const res = await axios.get('https://basalamiha.ir/api/v1/lunch/today', {
+      const res = await axios.get('https://basalamiha.com/api/v1/lunch/today', {
         headers: { Authorization: `Bearer ${key}` },
       });
 
